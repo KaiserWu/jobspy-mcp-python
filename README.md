@@ -47,6 +47,22 @@ Search for remote Python developer parttime jobs in Berlin around 6 miles, poste
 
 Results are returned as a Markdown table for easy readability by LLMs and users.
 
+## Docker
+
+You can build and run the server using Docker:
+
+### Build the Docker image
+
+```bash
+docker build -t jobspy-mcp-python .
+```
+
+### Run the server with Docker
+
+```bash
+docker run -p 5566:5566 jobspy-mcp-python
+```
+
 ## Requirements
 
 - Python 3.10+
