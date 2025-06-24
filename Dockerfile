@@ -8,4 +8,4 @@ COPY . /app
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-CMD ["python", "main.py", "-t", "${TRANSPORTER}"]
+CMD python main.py -t $TRANSPORTER
