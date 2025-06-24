@@ -1,0 +1,1 @@
+from jobspy_mcp import jobspy_mcp_server

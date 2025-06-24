@@ -57,10 +57,15 @@ You can build and run the server using Docker:
 docker build -t jobspy-mcp-python .
 ```
 
-### Run the server with Docker
+### Run the http server with Docker
 
 ```bash
 docker run -p 5566:5566 jobspy-mcp-python
+```
+
+### Run the sse server with Docker
+```bash
+docker run -p 5566:5566 -e TRANSPORTER=sse jobspy-mcp-python
 ```
 
 ## Requirements

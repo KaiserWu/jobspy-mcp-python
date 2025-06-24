@@ -1,5 +1,4 @@
 # server.py
-import argparse
 from mcp.server.fastmcp import FastMCP
 from jobspy import scrape_jobs
 from typing import Optional, List
@@ -15,9 +14,9 @@ Proxies support to bypass blocking
 """
 
 # Create an MCP server
-mcp = FastMCP("jobspy-mcp-python", instructions=instructions, stateless_http=True)
+jobspy_mcp_server = FastMCP("jobspy-mcp-python", instructions=instructions, stateless_http=True)
 
-@mcp.tool(
+@jobspy_mcp_server.tool(
     name="search_jobs",
     description="Searches various job boards for job postings. Returns the results as a table.",
 )
@@ -65,34 +64,3 @@ def search_jobs(
     if isinstance(jobs, pd.DataFrame):
         return jobs.head().to_markdown()
     return []
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run the JobSpy MCP server.")
-    parser.add_argument("-p", "--port", type=int, help="Port to host the server on", default=5566)
-    parser.add_argument(
-        "-t",
-        "--transport",
-        type=str,
-        default="stdio",
-        choices=["stdio", "http"],
-        help="Transport method for the MCP server (default: stdio). Host using streamable-http transport on default port 5566"
-    )
-    args = parser.parse_args()
-    transport = "stdio" if args.transport == "stdio" else "streamable-http"
-
-    if args.transport == "http" or args.transport == "sse":
-        mcp.settings.host = "0.0.0.0"
-        mcp.settings.port = args.port
-
-    import asyncio
-    try:
-        mcp.run(transport=transport)
-    except asyncio.exceptions.CancelledError:
-        print("Server stopped by user.")
-    except KeyboardInterrupt:
-        print("Server stopped by user.")
-    except Exception as e:
-        print(f"Error starting server: {e}")
-    finally:
-        print("Server has been shut down.")
-        exit(0)
