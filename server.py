@@ -80,7 +80,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     transport = "stdio" if args.transport == "stdio" else "streamable-http"
 
-    if args.transport == "http":
+    if args.transport == "http" or args.transport == "sse":
+        mcp.settings.host = "0.0.0.0"
         mcp.settings.port = args.port
 
     import asyncio
