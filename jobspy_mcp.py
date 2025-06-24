@@ -18,20 +18,8 @@ jobspy_mcp_server = FastMCP("jobspy-mcp-python", instructions=instructions, stat
 
 @jobspy_mcp_server.tool(
     name="search_jobs",
-    description="Searches various job boards for job postings. Returns the results as a table.",
-)
-def search_jobs(
-    search_term: str,
-    location: Optional[str] = None,
-    results_wanted: int = 20,
-    hours_old: int = 72,
-    site_name: List[str] = ["indeed", "linkedin", "zip_recruiter", "glassdoor", "google", "bayt", "naukri"],
-    distance: Optional[int] = None,
-    job_type: Optional[str] = None,
-    is_remote: bool = False,
-) -> Optional[str]:
-    """Searches job boards for job postings and returns the results as a DataFrame.
-        parameters={
+    description="""Searches various job boards for job postings. Returns the results as a markdown table.
+    parameters={
         "search_term": {"type": "string", "description": "Search term for the job, e.g. 'software engineer'"},
         "location": {"type": "string", "description": "Location, e.g. 'Berlin, Germany'", "default": None},
         "results_wanted": {"type": "integer", "description": "Number of desired results per job board", "default": 20},
@@ -49,7 +37,19 @@ def search_jobs(
             "default": None
         },
         "is_remote": {"type": "boolean", "description": "Whether the job is remote", "default": False}
-    }"""
+    }""" 
+)
+def search_jobs(
+    search_term: str,
+    location: Optional[str] = None,
+    results_wanted: int = 20,
+    hours_old: int = 72,
+    site_name: List[str] = ["indeed", "linkedin", "zip_recruiter", "glassdoor", "google", "bayt", "naukri"],
+    distance: Optional[int] = None,
+    job_type: Optional[str] = None,
+    is_remote: bool = False,
+) -> Optional[str]:
+    """Searches job boards for job postings and returns the results as a DataFrame."""
     jobs = scrape_jobs(
         site_name=site_name,
         search_term=search_term,
