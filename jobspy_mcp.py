@@ -29,8 +29,7 @@ def search_jobs(
     distance: Optional[int] = None,
     job_type: Optional[str] = None,
     is_remote: bool = False,
-
-):
+) -> Optional[str]:
     """Searches job boards for job postings and returns the results as a DataFrame.
         parameters={
         "search_term": {"type": "string", "description": "Search term for the job, e.g. 'software engineer'"},
@@ -63,4 +62,4 @@ def search_jobs(
     )
     if isinstance(jobs, pd.DataFrame):
         return jobs.head().to_markdown()
-    return []
+    return None
