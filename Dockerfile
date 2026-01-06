@@ -1,11 +1,16 @@
 FROM python:3.11-slim
-
+ARG PIP_INDEX_URL=https://pypi.org/simple/
+ARG PIP_EXTRA_INDEX_URL=""
 ENV TRANSPORTER="http"
 WORKDIR /app
 
-COPY . /app
+COPY requirements.txt /app
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip && \
+	pip install -r requirements.txt
 
-CMD python main.py -t $TRANSPORTER
+COPY main.py /app
+COPY jobspy_mcp.py /app
+COPY __init__.py /app
+
+CMD ["python", "main.py", "-t", "$TRANSPORTER"]
