@@ -15,13 +15,13 @@ This project provides an MCP (Multi-Component Platform) server that leverages th
 Start the server:
 
 ```bash
-python server.py
+python main.py
 ```
 
 You can specify the port and transport method:
 
 ```bash
-python server.py --port 5566 --transport http
+python main.py --port 5566 --transport http
 ```
 
 ## Example: Search for Jobs
