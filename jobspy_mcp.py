@@ -1,5 +1,6 @@
 # server.py
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 from jobspy import scrape_jobs
 from typing import Optional, List
 import pandas as pd
@@ -14,7 +15,9 @@ Proxies support to bypass blocking
 """
 
 # Create an MCP server
-jobspy_mcp_server = FastMCP("jobspy-mcp-python", instructions=instructions, stateless_http=True)
+jobspy_mcp_server = FastMCP("jobspy-mcp-python", instructions=instructions, stateless_http=True,
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=False))
 
 @jobspy_mcp_server.tool(
     name="search_jobs",

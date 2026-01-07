@@ -13,4 +13,6 @@ COPY main.py /app
 COPY jobspy_mcp.py /app
 COPY __init__.py /app
 
-CMD ["python", "main.py", "-t", "$TRANSPORTER"]
+EXPOSE 5566
+
+CMD ["/bin/sh", "-c", "python main.py -t ${TRANSPORTER}"]
