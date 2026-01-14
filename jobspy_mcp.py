@@ -4,6 +4,7 @@ from mcp.server.transport_security import TransportSecuritySettings
 from jobspy import scrape_jobs
 from typing import Optional, List
 import pandas as pd
+import logging
 
 instructions = """
 This is a MCP server using JobSpy engine for AI job searching.
@@ -23,7 +24,7 @@ jobspy_mcp_server = FastMCP("jobspy-mcp-python", instructions=instructions, stat
     name="search_jobs",
     description="""Searches various job boards for job postings. Returns the results as a markdown table.
     parameters={
-        "search_term": {"type": "string", "description": "Search term for the job, e.g. 'software engineer'"},
+        "search_term": {"type": "string", "description": "Search term for the job, e.g. 'software engineer', 'data scientist'"},
         "location": {"type": "string", "description": "Location, e.g. 'Berlin, Germany'", "default": None},
         "results_wanted": {"type": "integer", "description": "Number of desired results per job board", "default": 20},
         "hours_old": {"type": "integer", "description": "Only jobs posted in the last X hours", "default": 72},
@@ -51,18 +52,35 @@ def search_jobs(
     distance: Optional[int] = None,
     job_type: Optional[str] = None,
     is_remote: bool = False,
-) -> Optional[str]:
-    """Searches job boards for job postings and returns the results as a DataFrame."""
-    jobs = scrape_jobs(
-        site_name=site_name,
-        search_term=search_term,
-        location=location,
-        results_wanted=results_wanted,
-        hours_old=hours_old,
-        distance=distance,
-        job_type=job_type,
-        is_remote=is_remote,
-    )
-    if isinstance(jobs, pd.DataFrame):
-        return jobs.head().to_markdown()
-    return None
+) -> str:
+    """Searches job boards for job postings and returns the results as a json array of job URLs."""
+    logging.info(f"Searching jobs for term: {search_term} at location: {location} on sites: {site_name}")
+    fetch_description = False
+    distance_km = None
+    site_name_lower = to_lowercase(site_name)
+    if "linkedin" in site_name:
+        fetch_description = True
+    if distance is not None:
+        distance_km = int(distance * 1.60934)  # Convert miles to kilometers
+    try:
+        jobs = scrape_jobs(
+            site_name=site_name_lower,
+            search_term=search_term,
+            location=location,
+            results_wanted=results_wanted,
+            hours_old=hours_old,
+            distance=distance_km,
+            job_type=job_type,
+            is_remote=is_remote,
+            linkedin_fetch_description=fetch_description,
+        )
+        if isinstance(jobs, pd.DataFrame):
+            return jobs.head().to_json(orient="records")
+        return str(jobs)
+    except Exception as e:
+        logging.error(f"Error occurred while searching jobs: {e}")
+        return str(e)
+
+def to_lowercase(s: List[str]) -> List[str]:
+    """Converts a string to lowercase."""
+    return [item.lower() for item in s]
